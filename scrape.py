@@ -1,5 +1,6 @@
 from seleniumwire import webdriver
 import requests
+import ffmpeg
 import re
 
 # function to download media
@@ -55,4 +56,16 @@ for i, url in enumerate(urls):
                 result = None
                 # update where the end of the previous page traffic is now
                 requests_total = len(driver.requests)
+
+                # ffmpeg
+                # get each media stream from respective files
+                video_stream = ffmpeg.input(f'videos/video{i}.m4s')
+                audio_stream = ffmpeg.input(f'videos/audio{i}.m4s')
+
+                # concatenate them
+                stream = ffmpeg.concat(video_stream, audio_stream, v=1, a=1).output(video_stream, f'output/output{i}.mp4')
+
+                # execute the ffmpeg instruction
+                ffmpeg.run(stream)
+
                 break
